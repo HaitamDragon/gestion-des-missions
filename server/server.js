@@ -8,7 +8,7 @@ const connection = await mysql.createPool({
     host: "localhost",
     user: "root",
     password: "root",
-    database: "dbMissions"
+    database: "db_mission"
 
 });
 
