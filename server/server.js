@@ -3,6 +3,7 @@ import cors from "cors";
 import mysql from "mysql2/promise";
 
 const app = express();
+
 const connection = await mysql.createPool({
 
     host: "localhost",
@@ -12,26 +13,68 @@ const connection = await mysql.createPool({
 
 });
 
-try {
-  const [results, fields] = await connection.query(
-    'SELECT * FROM `dbMission`'
+async function fetchDatabase(sqlStmt)
+{
+  return connection.query (
+        sqlStmt
   );
-
-  console.log(results); // results contains rows returned by server
-  console.log(fields); // fields contains extra meta data about results, if available
-} catch (err) {
-  console.log(err);
 }
-
 
 const corsOptions = {
     origin: ["http://localhost:5173"],
 };
 
 app.use(cors(corsOptions));
+app.use(express.json());
 
-app.get("/acceuil", (req, res) => {
-    res.json({ test: "string" });
+app.get("/Mission", async (req, res) => {
+
+    try {
+      const [response] = await fetchDatabase("SELECT * FROM Mission");
+      res.json(response);
+    }
+
+    catch(err) {
+      //console.log("GET Request for /Mission failed.");
+      res.status(500);
+    }
+});
+
+app.get("/Employer", async (req, res) => {
+
+    try {
+      const [response] = await fetchDatabase("SELECT * FROM Employer");
+      res.json(response);
+    }
+
+    catch(err) {
+      //console.log("GET Request for /Employer failed.");
+      res.status(500);
+    }
+});
+
+app.get("/Chauffeur", async (req, res) => {
+   try {
+      const [response] = await fetchDatabase("SELECT * FROM Chauffeur");
+      res.json(response);
+    }
+
+    catch(err) {
+      //console.log("GET Request for /Chauffeur failed.");
+      res.status(500);
+    }
+});
+
+app.get("/Vehicule", async (req, res) => {
+    try {
+      const [response] = await fetchDatabase("SELECT * FROM Vehicule");
+      res.json(response);
+    }
+
+    catch(err) {
+      //console.log("GET Request for /Vehicule failed.");
+      res.status(500);
+    }   
 });
 
 app.listen(8080, () => {
