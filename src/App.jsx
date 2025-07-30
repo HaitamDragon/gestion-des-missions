@@ -1,25 +1,82 @@
 import Navbar from "./navbar.jsx";
 import Menu from "./menu.jsx";
-import StateManager from "./stateManager.jsx";
 import Contents from "./contents.jsx";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { StateManager } from "./stateManager";
 import './App.css';
 
 export default function App() {
+    const [currentContent, setCurrentContent] = useState(null);
+    const [activeButton, setActiveButton] = useState("Mission");
 
-  const defContent = <Contents h1={"Objet"} h2={"Destination"} h3={"Date aller"} h4={"Date retour"} data={{  }} />;
-  const [currentContent, setCurrentContent] = useState(defContent);
+    const handleContentChange = (contentComponent) => {
+        setCurrentContent(contentComponent);
+    };
 
-  const handleContentChange = (contentComponent) => {
-    setCurrentContent(contentComponent);
-  };
+    const handleButtonClick = (buttonText) => {
+        setActiveButton(buttonText);
+    };
 
-  return (
-    <>
-       <Navbar/>
-       <Menu onContentChange={handleContentChange}/>
-       <StateManager currentState={currentContent} />
-    </>
-  );
-  
+    useEffect(() => {
+        const loadInitialContent = async () => {
+            const initialContentsComponent = (
+                <Contents
+                    h1={"Nom"}
+                    h2={"Prenom"}
+                    h3={"Objet"}
+                    h4={"Destination"}
+                    h5={"Date aller"}
+                    h6={"Date retour"}
+                    h7={"Actions"}
+                    data={[]}
+                    type={"Mission"}
+                    onDataChange={() => {
+                        const missionButton = document.querySelector('.menu-button[data-text="Mission"]');
+                        if (missionButton) {
+                            missionButton.click();
+                        } else {
+                            console.warn("Mission button not found for initial data refresh.");
+                            const tempContents = (
+                                <Contents
+                                    h1={"Nom"}
+                                    h2={"Prenom"}
+                                    h3={"Objet"}
+                                    h4={"Destination"}
+                                    h5={"Date aller"}
+                                    h6={"Date retour"}
+                                    h7={"Actions"}
+                                    data={[]}
+                                    type={"Mission"}
+                                    onDataChange={() => {}}
+                                />
+                            );
+                            handleContentChange(tempContents);
+                        }
+                    }}
+                />
+            );
+            setCurrentContent(initialContentsComponent);
+            setActiveButton("Mission");
+        };
+
+        loadInitialContent();
+    }, []);
+
+    return (
+        <StateManager>
+            <>
+                <Navbar />
+
+                {/* The main content area now contains both the Menu and the dynamic content */}
+                <div className="main-content-area">
+                    <Menu
+                        onContentChange={handleContentChange}
+                        onButtonClick={handleButtonClick}
+                        activeButton={activeButton}
+                    />
+                    {currentContent}
+                </div>
+            </>
+        </StateManager>
+    );
 }
