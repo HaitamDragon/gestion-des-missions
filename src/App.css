@@ -125,6 +125,7 @@ td {
     max-width: 500px; /* Increased maximum width for columns */
     white-space: nowrap;
     text-overflow: ellipsis;
+    overflow: hidden;
 }
 
 td:last-child, th:last-child {

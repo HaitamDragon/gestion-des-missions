@@ -6,7 +6,7 @@ export default function Notification({ message, type, onClose }) {
         if (message) {
             const timer = setTimeout(() => {
                 onClose();
-            }, 2000); // Auto-hide after 3 seconds
+            }, 3000); // Auto-hide after 3 seconds
 
             return () => clearTimeout(timer);
         }

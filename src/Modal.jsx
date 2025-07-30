@@ -384,18 +384,22 @@ export default function Modal(props) {
         );
     }
 
+    // Handle confirmation modal separately - no Modal wrapper needed since it's already in ModalBackground
+    if (props.state === "confirm") {
+        return (
+            <div className="confirm-modal-content">
+                <h2>Confirmation</h2>
+                <p>{props.message}</p>
+                <div className="button-group">
+                    <button className="button-annuler" type="button" onClick={props.onClose}>Annuler</button>
+                    <button className="button-confirmer" type="button" onClick={props.onConfirm}>Confirmer</button>
+                </div>
+            </div>
+        );
+    }
+
     return (
         <div className="Modal">
-            {props.state === "confirm" && (
-                <div className="confirm-modal-content">
-                    <h2>Confirmation</h2>
-                    <p>{props.message}</p>
-                    <div className="button-group">
-                        <button className="button-annuler" type="button" onClick={props.onClose}>Annuler</button>
-                        <button className="button-confirmer" type="button" onClick={props.onConfirm}>Confirmer</button>
-                    </div>
-                </div>
-            )}
             {(props.state === "ajout" || props.state === "edit") && (
                 <form method="post" onSubmit={handleFormSubmit} encType={props.type === "Mission" ? "multipart/form-data" : ""}>
                     <h2 className="modal-title">
@@ -441,10 +445,15 @@ export default function Modal(props) {
                                     type={inputType}
                                     defaultValue={defaultValue}
                                     required
-                                    onChange={inputName === 'matricule' ? handleMatriculeChange : undefined}
+                                    onChange={inputName === 'matricule' && props.type === 'Mission' ? handleMatriculeChange : undefined}
                                 />
-                                {inputName === 'matricule' && employerInfo && (
-                                    <p className={employerInfo === "Employé non trouvé" ? 'error' : 'success'}>
+                                {inputName === 'matricule' && props.type === 'Mission' && employerInfo && (
+                                    <p style={{
+                                        color: employerInfo === "Employé non trouvé" || employerInfo === "Erreur lors de la recherche" ? '#d32f2f' : '#2e7d32',
+                                        fontWeight: 'bold',
+                                        margin: '5px 0',
+                                        fontSize: '14px'
+                                    }}>
                                         {employerInfo}
                                     </p>
                                 )}
