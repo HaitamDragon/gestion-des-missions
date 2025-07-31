@@ -18,45 +18,17 @@ export default function App() {
     };
 
     useEffect(() => {
-        const loadInitialContent = async () => {
-            const initialContentsComponent = (
-                <Contents
-                    h1={"Nom"}
-                    h2={"Prenom"}
-                    h3={"Objet"}
-                    h4={"Destination"}
-                    h5={"Date aller"}
-                    h6={"Date retour"}
-                    h7={"Actions"}
-                    data={[]}
-                    type={"Mission"}
-                    onDataChange={() => {
-                        const missionButton = document.querySelector('.menu-button[data-text="Mission"]');
-                        if (missionButton) {
-                            missionButton.click();
-                        } else {
-                            console.warn("Mission button not found for initial data refresh.");
-                            const tempContents = (
-                                <Contents
-                                    h1={"Nom"}
-                                    h2={"Prenom"}
-                                    h3={"Objet"}
-                                    h4={"Destination"}
-                                    h5={"Date aller"}
-                                    h6={"Date retour"}
-                                    h7={"Actions"}
-                                    data={[]}
-                                    type={"Mission"}
-                                    onDataChange={() => {}}
-                                />
-                            );
-                            handleContentChange(tempContents);
-                        }
-                    }}
-                />
-            );
-            setCurrentContent(initialContentsComponent);
+        const loadInitialContent = () => {
+            // Set Mission as active button and trigger Mission button click after component mounts
             setActiveButton("Mission");
+            
+            // Use setTimeout to ensure DOM is ready
+            setTimeout(() => {
+                const missionButton = document.querySelector('.menu-button');
+                if (missionButton && missionButton.textContent === "Mission") {
+                    missionButton.click();
+                }
+            }, 100);
         };
 
         loadInitialContent();

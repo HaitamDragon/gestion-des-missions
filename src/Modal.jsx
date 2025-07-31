@@ -46,19 +46,26 @@ export default function Modal(props) {
                     const initialTransportType = props.editData.id_veh || props.editData.id_chauf ? "2" : "1";
                     console.log("Mission type detected in useEffect. Setting initialTransportType to:", initialTransportType);
                     setSelectedTransportType(initialTransportType); // Set the transport type
-                    // If it's a vehicle mission in edit mode, fetch data immediately
+                    
+                    // Set file input label based on transport type
                     if (initialTransportType === "2") {
+                        setFileInputLabel("Coordonnées (pdf)");
+                        setFileInputAccept(".pdf");
                         console.log("Initial transport type is 'Vehicule', calling getChauffeurs() and getVehicules().");
                         getChauffeurs();
                         getVehicules();
+                    } else {
+                        setFileInputLabel("Images");
+                        setFileInputAccept("image/*");
                     }
                 }
             }
+        } else {
+            // For non-edit mode (ajout), set default file input to Images
+            setFileInputLabel("Images");
+            setFileInputAccept("image/*");
         }
-        // Always set file input to Images regardless of transport type or state
-        setFileInputLabel("Images");
-        setFileInputAccept("image/*");
-        setIsFileInputRequired(false); // Images are generally not strictly required for mission
+        setIsFileInputRequired(false); // Files are generally not strictly required for mission
     }, [props.state, props.editData, props.labels, props.type]);
 
     // This useEffect handles fetching when selectedTransportType changes dynamically (e.g., user changes dropdown)
@@ -81,6 +88,16 @@ export default function Modal(props) {
         const transportValue = event.target.value;
         console.log("handleTransportChange: setting selectedTransportType to:", transportValue);
         setSelectedTransportType(transportValue);
+        
+        // Update file input label and accept type based on transport type
+        if (transportValue === "2") { // Véhicule
+            setFileInputLabel("Coordonnées (pdf)");
+            setFileInputAccept(".pdf");
+        } else {
+            setFileInputLabel("Images");
+            setFileInputAccept("image/*");
+        }
+        
         // The second useEffect will handle fetching based on this change
     };
 
